@@ -1,13 +1,60 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
+import Constants from "expo-constants";
 import Feather from "@expo/vector-icons/Feather";
-import { Picker } from "@react-native-picker/picker";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import * as Linking from "expo-linking";
 
 function UserActivity() {
   const [selectedActivity, setselectedActivity] = useState("Upload");
+  const [fileUrls, setFileUrls] = useState([]);
+
+  useEffect(() => {
+    getAllFilesDownloadURLs();
+  }, []);
+
+  // get the link
+  const getAllFilesDownloadURLs = async () => {
+    const storage = getStorage();
+    const storageRef = ref(storage, "MyFile/");
+
+    try {
+      // List all files in the 'MyFile/' directory
+      const result = await listAll(storageRef);
+
+      // Iterate over each file and get its download URL
+      const urls = await Promise.all(
+        result.items.map(async (itemRef) => {
+          const downloadURL = await getDownloadURL(itemRef);
+          return downloadURL; // return the download URL to accumulate in the array
+        })
+      );
+
+      // Set the array of URLs to the state at once
+      setFileUrls(urls);
+
+      console.log("All file URLs:", urls);
+    } catch (error) {
+      console.error("Error listing files and getting URLs:", error);
+      Alert.alert("Error", "Failed to retrieve file download links.");
+    }
+  };
+
+  // handle download the file
+  const handledownload = async (url) => {
+    await Linking.openURL(url);
+  };
 
   return (
     // main view
@@ -22,15 +69,6 @@ function UserActivity() {
       </View>
       {/* upload history */}
       <View style={styles.uploadSec}>
-        {/* <Text>Upload History</Text> */}
-        <Picker
-          onValueChange={(e) => setselectedActivity(e)}
-          selectedValue={selectedActivity}
-          style={{ fontSize: 22 }}
-        >
-          <Picker.Item label="Upload" value="Upload" />
-          <Picker.Item label="Download" value="Download" />
-        </Picker>
         <View style={styles.selectedVal}>
           <Text style={styles.selected}>
             <MaterialCommunityIcons
@@ -38,24 +76,43 @@ function UserActivity() {
               size={20}
               color="black"
             />{" "}
-            Selected activitys: {selectedActivity}
+            Browse and download your file !
           </Text>
         </View>
       </View>
       {/* download history */}
-      <Pressable
-        android_ripple={{ color: "white" }}
-        onPress={() => Alert.alert("Hi", "Hello")}
-      >
-        <View style={styles.historyCard}>
-          <Text style={{ fontSize: 16, fontWeight: "500", color: "grey" }}>
-            <Fontisto name="date" size={20} color="black" />
-            {"  "}
-            {new Date().toLocaleDateString()}
-          </Text>
-          <MaterialIcons name="navigate-next" size={25} color="black" />
-        </View>
-      </Pressable>
+      {fileUrls?.length > 0 &&
+        fileUrls.map((url, index) => (
+          <Pressable
+            key={url}
+            android_ripple={{ color: "white" }}
+            // handledownload
+            onPress={() =>
+              Alert.alert("Download !", "Do you want to download?", [
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                { text: "OK", onPress: () => handledownload(url) },
+              ])
+            }
+          >
+            <View style={styles.historyCard}>
+              <Text style={{ fontSize: 16, fontWeight: "500", color: "grey" }}>
+                <Fontisto name="date" size={20} color="black" />
+                {"  "}
+                {index + 1}
+                {/* {fileUrls?.length} */}
+              </Text>
+              <MaterialIcons name="navigate-next" size={25} color="black" />
+            </View>
+          </Pressable>
+        ))}
+      {!fileUrls?.length && (
+        <ActivityIndicator size={30} style={{ marginTop: 50 }} />
+      )}
+      <View style={{ marginBottom: 20 }}></View>
     </View>
   );
 }
@@ -70,7 +127,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginTop: 50,
   },
-  uploadSec: {},
+  uploadSec: {
+    marginTop: 10,
+    marginBottom: 3,
+  },
   selectedVal: {
     marginHorizontal: 15,
   },
@@ -91,5 +151,9 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 5,
     backgroundColor: "lightblue",
+  },
+  container: {
+    flex: 1,
+    marginTop: Constants.statusBarHeight,
   },
 });

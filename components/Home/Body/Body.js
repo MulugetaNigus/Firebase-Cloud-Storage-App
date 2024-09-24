@@ -21,6 +21,7 @@ import * as DocumentPicker from 'expo-document-picker'
 
 // components
 import Modals from "../../Modals";
+import Store from "../../Store/Store";
 
 const Body = () => {
 
@@ -76,7 +77,7 @@ const Body = () => {
       setFile(result);
       setModalVisible(true);
     }
-  };
+  }; 
 
   return (
     <SafeAreaView>
