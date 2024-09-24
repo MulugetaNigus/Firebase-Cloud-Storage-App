@@ -16,7 +16,7 @@ const Header = () => {
          <View style={styles.profile}>
             {/* profile pic */}
             <View>
-            <FontAwesome5 name="user" size={28} color="black" />
+            <FontAwesome5 name="user" size={23} color="black" />
             </View>
             {/* user name */}
             <View style={styles.userInfo}>
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     // marginHorizontal: 15,
-    marginVertical: 20,
+    marginVertical: 10,
     backgroundColor: "lightblue", 
     borderBottomLeftRadius: 30, 
     borderBottomRightRadius: 30,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   welcomeTxt: {
     fontWeight: "500",
-    fontSize: 20,
+    fontSize: 18,
     color: "grey"
   },
   darkModeController: {

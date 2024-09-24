@@ -13,11 +13,11 @@ export default function App() {
     }, 5000);
   }, []);
   return (
-    <View>
+    <>
       {screen ? <SplashScreen /> : <Body />}
       {/* <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" /> */}
-    </View>
+    </>
   );
 }
 

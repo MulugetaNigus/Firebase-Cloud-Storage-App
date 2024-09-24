@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,19 +7,83 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
+  Modal,
 } from "react-native";
 import Header from "../Header/Header";
 import { StatusBar } from "expo-status-bar";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Feather from '@expo/vector-icons/Feather';
 import UserActivity from "../../UserActivity/UserActivity";
+
 // import AntDesign from '@expo/vector-icons/AntDesign';
+import * as DocumentPicker from 'expo-document-picker'
+
+// components
+import Modals from "../../Modals";
 
 const Body = () => {
+
+  const [file, setFile] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const hanletoUpload = async () => {
+    // console.log("hi");
+    setModalVisible(true);
+  };
+
+//   const uploadImage = async () => {
+//     const blob = await new Promise((resolve, reject) => {
+//       const xhr = new XMLHttpRequest();
+//       xhr.onload = function () {
+//         resolve(xhr.response);
+//       };
+//       xhr.onerror = function (e) {
+//         console.log(e);
+//         reject(new TypeError("Network request failed"));
+//       };
+//       xhr.responseType = "blob";
+//       xhr.open("GET", file, true);
+//       xhr.send(null);
+//     });
+
+//     const filename = file.substring(file.lastIndexOf("/") + 1);
+//     const storageRef = ref(storage, `images/${filename}`);
+
+//     uploadBytes(storageRef, blob)
+//       .then((snapshot) => {
+//         console.log("Uploaded a blob or file!");
+//         getDownloadURL(snapshot.ref).then((downloadURL) => {
+//           console.log("File available at", downloadURL);
+//         });
+//       })
+//       .catch((error) => {
+//         console.error("Error uploading file: ", error);
+//       });
+//   };
+
+  // hanle to download the file
+  
+  const hanletoDownload = async () => {};
+
+  const handleChooseFile = async () => {
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "*/*", // Allow picking of any file type
+    });
+
+    if (!result.canceled) {
+      console.log(result);
+      setFile(result);
+      setModalVisible(true);
+    }
+  };
+
   return (
     <SafeAreaView>
       <StatusBar backgroundColor="lightblue" />
       <ScrollView>
+    <Modals setModalVisible={setModalVisible} modalVisible={modalVisible} />
+
         {/* header components */}
         <Header />
         <View style={styles.ChooseTxt}>
@@ -32,19 +96,21 @@ const Body = () => {
           <Pressable
             android_ripple={{ color: "white" }}
             style={styles.uploadBtn}
+            onPress={() => hanletoUpload()}
           >
             <Text style={styles.uploadTxt}>
-              <AntDesign name="upload" size={22} color="grey" /> {"  "} Upload
+            <Feather name="file-plus" size={22} color="grey" /> {"  "} Upload File
             </Text>
           </Pressable>
           <Pressable
             android_ripple={{ color: "white" }}
             style={styles.downloadBtn}
+            onPress={() => hanletoDownload()}
           >
             <Text style={styles.uploadTxt}>
               <AntDesign name="download" size={22} color="grey" />
               {"  "}
-              Download
+              Download File
             </Text>
           </Pressable>
         </View>
@@ -67,7 +133,8 @@ const styles = StyleSheet.create({
   },
   ChooseTxt: {
     marginHorizontal: 15,
-    marginBottom: -10
+    marginBottom: -10,
+    marginTop: 15,
   },
   choosetxt: {
     fontSize: 25,
@@ -84,7 +151,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   uploadTxt: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: "grey",
   },
