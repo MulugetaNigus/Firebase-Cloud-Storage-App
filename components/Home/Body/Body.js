@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   SafeAreaView,
   ScrollView,
   Pressable,
-  Modal,
 } from "react-native";
 import Header from "../Header/Header";
 import { StatusBar } from "expo-status-bar";
@@ -15,56 +13,27 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Feather from '@expo/vector-icons/Feather';
 import UserActivity from "../../UserActivity/UserActivity";
+import { app } from '../../../firebaseConfig'
 
 // import AntDesign from '@expo/vector-icons/AntDesign';
 import * as DocumentPicker from 'expo-document-picker'
 
 // components
-import Modals from "../../Modals";
-import Store from "../../Store/Store";
+import Modals from "../../Modals/Modals";
+import DModals from "../../Modals/DModals";
 
 const Body = () => {
 
   const [file, setFile] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [darkMode , setDarkMode] = useState(false);
 
   const hanletoUpload = async () => {
     // console.log("hi");
     setModalVisible(true);
   };
 
-//   const uploadImage = async () => {
-//     const blob = await new Promise((resolve, reject) => {
-//       const xhr = new XMLHttpRequest();
-//       xhr.onload = function () {
-//         resolve(xhr.response);
-//       };
-//       xhr.onerror = function (e) {
-//         console.log(e);
-//         reject(new TypeError("Network request failed"));
-//       };
-//       xhr.responseType = "blob";
-//       xhr.open("GET", file, true);
-//       xhr.send(null);
-//     });
-
-//     const filename = file.substring(file.lastIndexOf("/") + 1);
-//     const storageRef = ref(storage, `images/${filename}`);
-
-//     uploadBytes(storageRef, blob)
-//       .then((snapshot) => {
-//         console.log("Uploaded a blob or file!");
-//         getDownloadURL(snapshot.ref).then((downloadURL) => {
-//           console.log("File available at", downloadURL);
-//         });
-//       })
-//       .catch((error) => {
-//         console.error("Error uploading file: ", error);
-//       });
-//   };
-
-  // hanle to download the file
-  
   const hanletoDownload = async () => {};
 
   const handleChooseFile = async () => {
@@ -80,13 +49,14 @@ const Body = () => {
   }; 
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: darkMode ? "#262626" : null, flex: 1 }}>
       <StatusBar backgroundColor="lightblue" />
       <ScrollView>
     <Modals setModalVisible={setModalVisible} modalVisible={modalVisible} />
+    <DModals modalVisible2={modalVisible2} setModalVisible2={setModalVisible2} />
 
         {/* header components */}
-        <Header />
+        <Header setDarkMode={setDarkMode} darkMode={darkMode}/>
         <View style={styles.ChooseTxt}>
           <Text style={styles.choosetxt}>
             <MaterialIcons name="category" size={25} color="grey" /> Choose
@@ -106,7 +76,7 @@ const Body = () => {
           <Pressable
             android_ripple={{ color: "white" }}
             style={styles.downloadBtn}
-            onPress={() => hanletoDownload()}
+            onPress={() => setModalVisible2(true)}
           >
             <Text style={styles.uploadTxt}>
               <AntDesign name="download" size={22} color="grey" />

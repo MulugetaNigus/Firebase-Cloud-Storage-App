@@ -11,9 +11,7 @@ import {
 import * as DocumentPicker from "expo-document-picker";
 // firebase packages
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app } from "../firebaseConfig";
-import Store from "./Store/Store";
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from "expo-secure-store";
 
 const Modals = ({ modalVisible, setModalVisible }) => {
   const [file, setFile] = useState(null);
@@ -37,7 +35,7 @@ const Modals = ({ modalVisible, setModalVisible }) => {
         setisUploading(false);
         return Alert.alert("Alert", "No file selected !");
       }
-  
+
       const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = function () {
@@ -52,30 +50,30 @@ const Modals = ({ modalVisible, setModalVisible }) => {
         xhr.open("GET", file.assets[0].uri, true);
         xhr.send(null);
       });
-  
+
       const filename = file.assets[0].uri.substring(
         file.assets[0].uri.lastIndexOf("/") + 1
       );
       const storage = getStorage();
       const storageRef = ref(storage, `MyFile/${filename}`);
-  
+
       await uploadBytes(storageRef, blob)
         .then((snapshot) => {
           console.log("Uploaded a blob or file!");
           setisUploading(false);
-  
+
           getDownloadURL(snapshot.ref).then(async (downloadURL) => {
             console.log("File available at", downloadURL);
-  
+
             // Alert the user when the file is successfully uploaded
             setisUploading(false);
             Alert.alert("CONFIRMATION", "File Uploaded Successfully !!!");
             setModalVisible(false);
             setFile(null);
-  
+
             // Store the file download link in the device using SecureStore
             try {
-              await SecureStore.setItemAsync("00000", downloadURL);  // Key and Value
+              await SecureStore.setItemAsync("00000", downloadURL); // Key and Value
               console.log("Download URL stored successfully.");
             } catch (error) {
               console.error("Error saving URL to SecureStore: ", error);
@@ -92,7 +90,6 @@ const Modals = ({ modalVisible, setModalVisible }) => {
       console.log(error);
     }
   };
-  
 
   return (
     <View style={styles.centeredView}>
@@ -158,6 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
     flexDirection: "column",
   },
+  centeredViews: {},
   modalView: {
     margin: 20,
     backgroundColor: "white",
@@ -193,7 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   modalText: {
-    fontSize: 28,
+    fontSize: 22,
     color: "grey",
     fontWeight: "500",
     marginBottom: 5,
