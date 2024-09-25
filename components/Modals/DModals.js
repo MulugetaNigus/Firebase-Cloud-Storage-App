@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -15,6 +16,9 @@ const DModals = ({ modalVisible2, setModalVisible2 }) => {
   const [text, setText] = useState("");
 
   const handleDownload = async () => {
+    if (!text) {
+      return Alert.alert("Alert", "Invalied URL Detected !");
+    }
     await Linking.openURL(text);
     setText("");
   };
@@ -86,13 +90,13 @@ const styles = StyleSheet.create({
   },
   downloadButton: {
     alignItems: "center",
-    backgroundColor: "blue",
+    backgroundColor: "lightblue",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
   downloadButtonText: {
-    color: "white",
+    color: "grey",
     fontSize: 16,
     padding: 5,
     fontWeight: "bold",

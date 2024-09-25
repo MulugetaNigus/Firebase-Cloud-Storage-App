@@ -23,7 +23,7 @@ import {
   getMetadata,
 } from "firebase/storage";
 import * as Linking from "expo-linking";
-import { app } from "../../firebaseConfig";
+// import { app } from "../Config/firebaseConfig";
 import * as Clipboard from 'expo-clipboard';
 
 function UserActivity() {

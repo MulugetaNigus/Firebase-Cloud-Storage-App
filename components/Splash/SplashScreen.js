@@ -4,7 +4,8 @@ import { View, Image, Text, StyleSheet } from 'react-native';
 const SplashScreen = () => {
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/logo.png')} style={styles.logo} />
+      {/* ('../../assets/logo.png */}
+      <Image source={require('../../assets/Icon.png')} style={styles.logo} />
       {/* <Text style={styles.message}>የትም-Share</Text> */}
     </View>
   );
@@ -22,12 +23,6 @@ const styles = StyleSheet.create({
     height: 350,
     resizeMode: 'contain',
   },
-  // message: {
-  //   fontSize: 30,
-  //   marginTop: 20,
-  //   fontWeight: "800",
-  //   color: "grey"
-  // },
 });
 
 export default SplashScreen;

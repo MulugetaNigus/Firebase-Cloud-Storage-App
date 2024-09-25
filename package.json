@@ -19,7 +19,8 @@
     "expo-secure-store": "~13.0.2",
     "react-native-webview": "13.8.6",
     "expo-linking": "~6.3.1",
-    "expo-clipboard": "~6.0.3"
+    "expo-clipboard": "~6.0.3",
+    "react-native-reanimated": "~3.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
